@@ -1,48 +1,41 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, Alert } from "react-native";
 import InputField from "../../components/Forms/InputFiled";
-import Button from "../../components/Forms/Button"; // Importing the custom Button component
+import Button from "../../components/Forms/Button";
 import { useNavigation } from "@react-navigation/native";
 import { login } from '../../auth';
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigation = useNavigation();
 
   const handleLogin = async () => {
-    // Check if any field is empty
     if (!email || !password) {
       Alert.alert("Error", "Please fill in all fields");
       return;
     }
 
-    // Check if email is valid
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       Alert.alert("Error", "Please enter a valid email address");
       return;
     }
 
-    // if (password == "Abcd@123") {
-    //   navigation.navigate("Dashboard");
-    //   Alert.alert("login successfull");
-    // } else {
-    //   Alert.alert("Error", "Invalid Credentials");
-    // }
-
-    // If all checks pass, proceed with login logic
     try {
-        await login(email, password);
-        navigation.navigate('Dashboard');
+      await login(email, password);
+      navigation.navigate('Dashboard');
     } catch (err) {
-        setError(err.message);
+      setError(err.message);
+      Alert.alert("Error", err.message);
     }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.welcomeText}>Welcome Back!</Text>
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
       <InputField placeholder="Email" onChangeText={(text) => setEmail(text)} />
       <InputField
         placeholder="Password"
@@ -99,6 +92,11 @@ const styles = StyleSheet.create({
   },
   signupTextRed: {
     color: "red",
+  },
+  errorText: {
+    color: 'red',
+    textAlign: 'center',
+    marginBottom: 10,
   },
 });
 
