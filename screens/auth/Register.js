@@ -6,8 +6,6 @@ import { useNavigation } from "@react-navigation/native";
 import { getAuth, updateProfile } from "firebase/auth";
 import { signUp } from '../../auth.js';
 
-
-
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -35,42 +33,35 @@ const Register = () => {
   };
 
   const handleSignUp = async () => {
-    // Check if any field is empty
     if (!name || !email || !password || !confirmPassword) {
       Alert.alert("Error", "Please fill in all fields");
       return;
     }
 
-    // Check if email is valid
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       Alert.alert("Error", "Please enter a valid email address");
       return;
     }
 
-    // Check if password meets minimum length requirement
     if (password.length < 6) {
       Alert.alert("Error", "Password must be at least 6 characters long");
       return;
     }
 
-    // Check if passwords match
     if (password !== confirmPassword) {
       Alert.alert("Error", "Passwords do not match");
       return;
     }
 
-    // If all checks pass, proceed with sign-up logic
     try {
-        await signUp(email, password);
-        await updateUserProfile(name);
-        // setMessage("Profile updated successfully!");
-        await navigation.navigate('Dashboard');
+      const user = await signUp(email, password);
+      await updateUserProfile(name);
+      Alert.alert("Success", "Verification email sent! Please check your inbox.");
+      navigation.navigate('Login');
     } catch (err) {
-        setError(err.message);
-        Alert.alert("Error", "signup failed");
+      Alert.alert("Error", err.message);
     }
-
   };
 
   return (
