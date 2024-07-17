@@ -13,7 +13,8 @@ import { Icon } from "react-native-elements";
 import { getAuth } from "firebase/auth";
 import { logout } from "../auth";
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { auth, db } from '../FirebaseConfig'; // Adjust the path according to your file structure
+import { auth, db } from '../FirebaseConfig'; 
+import { insertQuestion, getAllQuestions } from '../repositories.js'
 
 export default function Dashboard({ navigation }) {
   const [user, setUser] = useState(null);
@@ -54,6 +55,34 @@ export default function Dashboard({ navigation }) {
     };
 
     updateGreeting();
+
+    // Example usage
+    const addQuestion = async () => {
+      const sampleQuestion = {
+        id: '1',
+        question: 'What is the capital of France?',
+        option1: 'Paris',
+        option2: 'Berlin',
+        option3: 'London',
+        option4: 'Madrid',
+        correctAnswer: 'Paris',
+        paid: true,
+        testType: 'General Knowledge',
+        quizID: 1
+      };
+      await insertQuestion(sampleQuestion);
+    };
+
+    const getQuestions = async () => {
+      const questions = await getAllQuestions();
+      console.log('All questions:', questions);
+    };
+
+    // Similarly, use functions from other query files for provinces, testTypes, and quizHistory
+
+    addQuestion();
+    getQuestions();
+
   }, []);
 
   useFocusEffect(

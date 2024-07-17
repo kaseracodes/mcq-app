@@ -5,6 +5,7 @@ import Button from "../../components/Forms/Button";
 import { useNavigation } from "@react-navigation/native";
 import { getAuth, updateProfile } from "firebase/auth";
 import { signUp } from '../../auth.js';
+import { syncFirebaseToSQLite } from '../../sync';
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -59,6 +60,7 @@ const Register = () => {
       await updateUserProfile(name);
       Alert.alert("Success", "Verification email sent! Please check your inbox.");
       navigation.navigate('Login');
+      await syncFirebaseToSQLite();
     } catch (err) {
       Alert.alert("Error", err.message);
     }

@@ -4,6 +4,7 @@ import InputField from "../../components/Forms/InputFiled";
 import Button from "../../components/Forms/Button";
 import { useNavigation } from "@react-navigation/native";
 import { login } from '../../auth';
+import { syncFirebaseToSQLite } from '../../sync';
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -26,6 +27,7 @@ const Login = () => {
     try {
       await login(email, password);
       navigation.navigate('Dashboard');
+      await syncFirebaseToSQLite();
     } catch (err) {
       setError(err.message);
       Alert.alert("Error", err.message);
